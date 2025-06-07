@@ -208,9 +208,10 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
    The interview flow is managed through a directed graph with the following structure:
 
    ```mermaid
+   %%{init: {"theme": "dark", "themeVariables": { "primaryColor": "#ff4c4c", "primaryTextColor": "#ffffff", "primaryBorderColor": "#ff4c4c", "lineColor": "#ffffff", "sectionBkgColor": "#1a1a1a", "altSectionBkgColor": "#2a2a2a", "gridColor": "#333333", "secondaryColor": "#a8c8ec", "tertiaryColor": "#1a1a1a"}}}%%
    graph TD
        %% Entry Points
-       Start([__start__]) -->|determine_entry_point| EntryRouter{determine_entry_point}
+       Start([__start__]) --> EntryRouter{determine_entry_point}
 
        %% Greeting Flow
        EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
@@ -218,34 +219,39 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
        EntryRouter -->|Ready to Start| Evaluator[Evaluate Response]
 
        %% Greeting Response Flow
-       GreetingResponse -->|greeting_response_router| GreetRouter{greeting_response_router}
+       GreetingResponse --> GreetRouter{greeting_response_router}
        GreetRouter -->|Not Ready| GreetCandidate
        GreetRouter -->|Ready| RickAgent[Generate Question]
 
        %% Main Interview Flow
        RickAgent --> End3([End - Show Question])
-       Evaluator -->|evaluation_decision| EvalRouter{evaluation_decision}
+       Evaluator --> EvalRouter{evaluation_decision}
        EvalRouter -->|Relevant| FollowUpCheck[Check Follow-up]
        EvalRouter -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
 
        %% Follow-up Flow
-       FollowUpCheck -->|followup_router| FollowUpRouter{followup_router}
+       FollowUpCheck --> FollowUpRouter{followup_router}
        FollowUpRouter -->|Generated Follow-up| End1([End - Show Follow-up Question])
        FollowUpRouter -->|No Follow-up Generated| RickAgent
 
        %% Fallback Flow
-       FallbackAgent -->|fallback_router| FallbackRouter{fallback_router}
-       FallbackRouter -->|>3 Attempts| RickAgent
+       FallbackAgent --> FallbackRouter{fallback_router}
+       FallbackRouter -->|More than 3 Attempts| RickAgent
        FallbackRouter -->|Normal Fallback| End2([End - Show Fallback Response])
 
+       %% Legend
+       Legend[Legend:<br/>🔷 Diamonds = Routing Functions<br/>📦 Rectangles = Process Nodes<br/>⭕ Circles = Terminal Nodes]
+
        %% Node Styles
-       classDef process fill:#f9f,stroke:#333,stroke-width:2px
-       classDef decision fill:#bbf,stroke:#333,stroke-width:2px
-       classDef endpoint fill:#bfb,stroke:#333,stroke-width:2px
+       classDef process fill:#ff4c4c,stroke:#ffffff,stroke-width:2px,color:#ffffff
+       classDef decision fill:#a8c8ec,stroke:#ffffff,stroke-width:2px,color:#000000
+       classDef endpoint fill:#4ade80,stroke:#ffffff,stroke-width:2px,color:#000000
+       classDef legend fill:#333333,stroke:#ffffff,stroke-width:1px,color:#ffffff
 
        class GreetCandidate,Evaluator,GreetingResponse,FollowUpCheck,FallbackAgent process
        class EntryRouter,GreetRouter,EvalRouter,FollowUpRouter,FallbackRouter decision
        class Start,End1,End2,End3,RickAgent endpoint
+       class Legend legend
    ```
 
    Key Components:
