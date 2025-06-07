@@ -150,10 +150,6 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
      streamlit run app.py
      ```
 
-   ```
-
-   ```
-
 ## 📖 Usage Guide
 
 ### Starting an Interview
@@ -214,38 +210,42 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
    ```mermaid
    graph TD
        %% Entry Points
-       Start([Start]) --> EntryPoint{Determine Entry Point}
+       Start([__start__]) -->|determine_entry_point| EntryRouter{determine_entry_point}
 
        %% Greeting Flow
-       EntryPoint -->|No Greeting| GreetCandidate[Greet Candidate]
-       EntryPoint -->|Has Response| GreetingResponse[Process Greeting]
-       EntryPoint -->|Ready to Start| Evaluator[Evaluate Response]
+       EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
+       EntryRouter -->|Has Response| GreetingResponse[Process Greeting]
+       EntryRouter -->|Ready to Start| Evaluator[Evaluate Response]
 
        %% Greeting Response Flow
-       GreetingResponse -->|Not Ready| GreetCandidate
-       GreetingResponse -->|Ready| RickAgent[Generate Question]
+       GreetingResponse -->|greeting_response_router| GreetRouter{greeting_response_router}
+       GreetRouter -->|Not Ready| GreetCandidate
+       GreetRouter -->|Ready| RickAgent[Generate Question]
 
        %% Main Interview Flow
-       RickAgent --> Evaluator
-       Evaluator -->|Relevant| FollowUpCheck{Check Follow-up}
-       Evaluator -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
+       RickAgent --> End3([End - Show Question])
+       Evaluator -->|evaluation_decision| EvalRouter{evaluation_decision}
+       EvalRouter -->|Relevant| FollowUpCheck[Check Follow-up]
+       EvalRouter -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
 
        %% Follow-up Flow
-       FollowUpCheck -->|Need Follow-up| End1([End - Ask Follow-up])
-       FollowUpCheck -->|No Follow-up| RickAgent
+       FollowUpCheck -->|followup_router| FollowUpRouter{followup_router}
+       FollowUpRouter -->|Generated Follow-up| End1([End - Show Follow-up Question])
+       FollowUpRouter -->|No Follow-up Generated| RickAgent
 
        %% Fallback Flow
-       FallbackAgent -->|Too Many Attempts| RickAgent
-       FallbackAgent -->|Normal Fallback| End2([End - Show Fallback])
+       FallbackAgent -->|fallback_router| FallbackRouter{fallback_router}
+       FallbackRouter -->|>3 Attempts| RickAgent
+       FallbackRouter -->|Normal Fallback| End2([End - Show Fallback Response])
 
        %% Node Styles
        classDef process fill:#f9f,stroke:#333,stroke-width:2px
        classDef decision fill:#bbf,stroke:#333,stroke-width:2px
        classDef endpoint fill:#bfb,stroke:#333,stroke-width:2px
 
-       class GreetCandidate,RickAgent,Evaluator,FallbackAgent process
-       class EntryPoint,FollowUpCheck decision
-       class Start,End1,End2 endpoint
+       class GreetCandidate,Evaluator,GreetingResponse,FollowUpCheck,FallbackAgent process
+       class EntryRouter,GreetRouter,EvalRouter,FollowUpRouter,FallbackRouter decision
+       class Start,End1,End2,End3,RickAgent endpoint
    ```
 
    Key Components:
