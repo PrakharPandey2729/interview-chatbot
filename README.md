@@ -150,6 +150,10 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
      streamlit run app.py
      ```
 
+   ```
+
+   ```
+
 ## 📖 Usage Guide
 
 ### Starting an Interview
