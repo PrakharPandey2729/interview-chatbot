@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Local development
+data/
+*.db
+
+# Audio files (if you want to exclude them)
+*.mp3
+*.wav
+
+# Keep the specific audio file we need
+!woo_vu_luvub_dub_dub.mp3
+
+# Keep the specific image we need
+!techrickal.png
+
+# Deployment files with sensitive data
+build-and-deploy.bat
+deploy.sh
+
+# System files
+.DS_Store
+Thumbs.db 
