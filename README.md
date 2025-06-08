@@ -6,74 +6,37 @@
   <em>Wubba Lubba Dub Dub! Let's get technical!</em>
 </div>
 
-## Documentation Index
+## 📋 Documentation Index
 
-- [Project Overview](#-project-overview)
-- [Installation Instructions](#-installation-instructions)
+- [What This Is](#what-this-is)
+- [Setup & Installation](#-setup--installation)
 - [Quick Start](#-quick-start)
 - [Usage Guide](#-usage-guide)
+- [Technical Architecture](#️-technical-architecture)
 - [Prompt Design](#-prompt-design)
-- [Technical Architecture](#-technical-architecture)
-- [Challenges & Solutions](#-challenges--solutions)
+- [Implementation Challenges](#-key-implementation-challenges)
 
-## Project Overview
+## What This Is
 
-The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistant that revolutionizes the initial screening process. Built with a unique Rick and Morty personality twist, it combines advanced AI technology with professional interview techniques to create an engaging and efficient candidate screening experience.
+A technical interview chatbot with Rick Sanchez's personality. Candidates answer tech questions while Rick roasts their responses with his characteristic sarcasm.
 
-### Core Capabilities
+### What It Does
 
-- **Intelligent Screening**: Conducts preliminary technical interviews with human-like interaction
-- **Personality-Driven**: Maintains Rick Sanchez's unique personality while staying professional
-- **Dynamic Adaptation**: Adjusts questions based on candidate's tech stack and experience level
-- **State Management**: Maintains conversation context and progress using LangGraph
-- **Data Persistence**: Securely stores interview responses for later review
-- **Multi-Platform**: Accessible via web interface with responsive design
+- Conducts actual technical interviews based on candidate's tech stack
+- Maintains Rick's personality (burps, sarcasm, scientific references)
+- Generates follow-up questions based on answer quality
+- Tracks conversation state across sessions using LangGraph
+- Stores full interview history in MongoDB
 
-### Technical Architecture
+### How It Works
 
-- **Frontend**: Streamlit-based responsive web interface
-- **Backend**: FastAPI server with WebSocket support
-- **AI Engine**: OpenAI GPT-4 Turbo with custom prompt engineering
-- **State Management**: LangGraph with MongoDB checkpointing
-- **Database**: MongoDB Atlas for persistent storage
-- **Deployment**: Docker containerization with Google Cloud Run
+- **Frontend**: Streamlit web interface
+- **Backend**: FastAPI with GPT-4 Turbo
+- **State**: LangGraph manages conversation flow
+- **Storage**: MongoDB Atlas for persistence
+- **Deploy**: Docker container on Google Cloud Run
 
-### 🌟 Key Features
-
-- **🤖 AI-Powered Interviews**
-
-  - Powered by OpenAI's GPT-4 Turbo for intelligent conversation
-  - Custom-trained to maintain Rick Sanchez's personality while conducting professional interviews
-  - Context-aware responses and follow-up questions
-  - **LangGraph Integration** for sophisticated conversation state management and flow control
-  - MongoDB checkpointing for persistent conversation state
-
-- **💻 Modern Tech Stack**
-
-  - Frontend: Streamlit for a sleek, responsive UI
-  - Backend: FastAPI for robust API handling
-  - Database: MongoDB for secure data storage
-  - Containerized with Docker for easy deployment
-  - **LangGraph** for advanced conversation orchestration
-  - **LangGraph MongoDB Checkpointing** for state persistence
-
-- **🎯 Interview Features**
-
-  - Dynamic candidate onboarding
-  - Tech stack-based question generation
-  - Experience level adaptation
-  - Real-time conversation history
-  - Audio feedback (Rick's iconic catchphrases)
-  - Comprehensive response storage
-
-- **🔒 Security & Privacy**
-  - Secure API key management
-  - Environment variable protection
-  - MongoDB Atlas integration
-  - CORS protection
-  - Data encryption
-
-## Installation Instructions
+## 📋 Setup & Installation
 
 ### Prerequisites
 
@@ -190,7 +153,7 @@ gcloud run deploy interview-chatbot \
 
 ### Starting an Interview
 
-1. Access the web interface at `http://localhost:8501`
+1. Access the web interface at `http://localhost:8501` or your cloud deployment URL
 2. **Login/Register**:
 
    - Enter your name, email, and password
@@ -228,33 +191,31 @@ gcloud run deploy interview-chatbot \
 
 ## 🏗️ Technical Architecture
 
-### Core Technologies Stack
+### Tech Stack
 
-- **Frontend**: Streamlit 1.44.1 with responsive UI components
-- **Backend**: FastAPI 0.115.12 with async request handling
-- **AI Engine**: OpenAI GPT-4 Turbo with custom prompt engineering
-- **State Management**: LangGraph 0.4.5 with directed graph orchestration
-- **Database**: MongoDB Atlas with embedded document structure
-- **Persistence**: LangGraph MongoDB checkpointing for conversation state
-- **Containerization**: Docker with multi-stage builds
-- **Deployment**: Google Cloud Run with auto-scaling
+- **Frontend**: Streamlit 1.44.1
+- **Backend**: FastAPI 0.115.12
+- **AI**: OpenAI GPT-4 Turbo
+- **State Management**: LangGraph 0.4.5 with MongoDB checkpointing
+- **Database**: MongoDB Atlas
+- **Deployment**: Docker + Google Cloud Run
 
 ### Project Structure
 
 ```
 interview-chatbot/
-├── app.py                        # Streamlit frontend application
-├── main.py                      # FastAPI backend server
-├── rick_agent.py               # Rick Sanchez AI agent with LangGraph
-├── requirements.txt            # Python dependencies
-├── Dockerfile                 # Container configuration
+├── app.py                    # Streamlit frontend application
+├── main.py                   # FastAPI backend server
+├── rick_agent.py             # Rick Sanchez AI agent with LangGraph
+├── requirements.txt          # Python dependencies
+├── Dockerfile                # Container configuration
 ├── start_servers_locally.bat # Windows local development script
 └── .env                      # Environment variables (not in repo)
 ```
 
-### LangGraph Conversation Flow
+### LangGraph Flow
 
-The interview flow is managed through a sophisticated directed graph:
+The interview conversation is managed through this directed graph:
 
 ```mermaid
 %%{init: {"theme": "dark", "themeVariables": { "primaryColor": "#ff4c4c", "primaryTextColor": "#ffffff", "primaryBorderColor": "#ff4c4c", "lineColor": "#ffffff", "sectionBkgColor": "#1a1a1a", "altSectionBkgColor": "#2a2a2a", "gridColor": "#333333", "secondaryColor": "#a8c8ec", "tertiaryColor": "#1a1a1a"}}}%%
@@ -354,198 +315,71 @@ class InterviewState(TypedDict):
     _routing: str                        # Internal routing information
 ```
 
-This state structure enables:
+The state persists conversation context, tracks follow-up threads, and handles routing decisions across the entire interview flow.
 
-- **Conversation Continuity**: Maintains context across all interactions
-- **Dynamic Question Generation**: Adapts questions based on candidate profile
-- **Thread Management**: Tracks follow-up questions and conversation threads
-- **Error Recovery**: Handles fallback scenarios and routing decisions
+### Database Schema
 
-### Core System Components
+```json
+{
+  "candidates": {
+    "_id": "ObjectId",
+    "name": "string",
+    "email": "string",
+    "password": "string",
+    "tech_stack": ["string"],
+    "experience": {
+      "years": "number",
+      "months": "number"
+    },
+    "interested_roles": ["string"],
+    "chat_history": [
+      {
+        "user": "string",
+        "bot": "string",
+        "timestamp": "datetime"
+      }
+    ]
+  }
+}
+```
 
-1. **LangGraph Integration**
-
-   - Sophisticated conversation state management
-   - Directed acyclic graph (DAG) for interview flow control
-   - State persistence using MongoDB checkpointing
-   - Custom node definitions for interview stages
-   - Error handling and recovery mechanisms
-
-2. **Interview Flow Management**
-
-   - Multi-stage interview process
-   - Dynamic question generation based on tech stack
-   - Experience level adaptation
-   - Context preservation across sessions
-   - Graceful conversation termination
-
-3. **API Design**
-
-   - RESTful endpoints for interview management
-   - Rate limiting and request validation
-   - Error handling middleware
-   - CORS configuration
-   - FastAPI automatic documentation
-
-4. **Database Architecture**
-
-   ```json
-   {
-     "candidates": {
-       "_id": "ObjectId",
-       "name": "string",
-       "email": "string",
-       "password": "string",
-       "tech_stack": ["string"],
-       "experience": {
-         "years": "number",
-         "months": "number"
-       },
-       "interested_roles": ["string"],
-       "chat_history": [
-         {
-           "user": "string",
-           "bot": "string",
-           "timestamp": "datetime"
-         }
-       ]
-     }
-   }
-   ```
-
-   **Schema Features:**
-
-   - Single collection design with embedded chat history
-   - Unique email constraint for registration
-   - Timestamped conversation tracking
-   - Tech stack and experience modeling
-   - Role preferences storage
-   - LangGraph state stored separately via `langgraph-checkpoint-mongodb`
-
-5. **Security & Performance Features**
-   - Environment variable protection
-   - API key management
-   - MongoDB Atlas integration
-   - CORS protection
-   - Rate limiting
-   - Input validation and sanitization
-   - Token usage optimization
-   - Response caching for common queries
-
-### Development Tools
-
-- **Local Development**: Windows batch scripts for server management
-- **Containerization**: Docker with optimized multi-stage builds
-- **Cloud Deployment**: Google Cloud Run with auto-scaling
-- **API Documentation**: FastAPI automatic OpenAPI documentation
-- **Environment Management**: `.env` file configuration
-- **Monitoring**: Built-in logging and error tracking
-
-### API Documentation
-
-The backend API provides comprehensive documentation:
-
-- **Swagger UI**: `http://localhost:8000/docs`
-- **ReDoc**: `http://localhost:8000/redoc`
-- **OpenAPI Schema**: Auto-generated with request/response models
+Single MongoDB collection with embedded chat history. LangGraph state is stored separately using `langgraph-checkpoint-mongodb`.
 
 ## 🎨 Prompt Design
 
-### Core Principles
+### Rick's Interview Approach
 
-1. **Personality Consistency**
+The system maintains Rick's personality while conducting actual technical interviews. Key strategies:
 
-   - Maintain Rick's unique voice while staying professional
-   - Use appropriate catchphrases and references
-   - Balance technical accuracy with character
-   - Context-aware personality adaptation
+- **Character Consistency**: Rick's sarcasm and catchphrases, but stays on technical topics
+- **Adaptive Questioning**: Questions scale with candidate experience and tech stack
+- **Follow-up Logic**: Evaluates answers and generates relevant follow-ups
+- **Fallback Handling**: When candidates give poor answers, Rick gets appropriately frustrated
 
-2. **Interview Structure**
+```python
+INTERVIEW_STAGES = {
+    "greeting": "Initial welcome and overview",
+    "candidate_info": "Collect basic information",
+    "tech_stack": "Gather technical background",
+    "technical_qa": "Dynamic question generation",
+    "follow_up": "Context-aware follow-ups",
+    "conclusion": "Summary and next steps"
+}
+```
 
-   ```python
-   INTERVIEW_STAGES = {
-       "greeting": "Initial welcome and overview",
-       "candidate_info": "Collect basic information",
-       "tech_stack": "Gather technical background",
-       "technical_qa": "Dynamic question generation",
-       "follow_up": "Context-aware follow-ups",
-       "conclusion": "Summary and next steps"
-   }
-   ```
+## 🎯 Key Implementation Challenges
 
-3. **Question Generation Strategy**
+### LangGraph State Management
 
-   - Tech stack-based question selection
-   - Experience level adaptation
-   - Progressive difficulty scaling
-   - Context preservation
-   - Dynamic follow-up generation
-   - Quality validation checks
+Managing conversation state across Rick's personality changes and interview stages. Solved with MongoDB checkpointing and careful state transitions.
 
-4. **Response Handling**
-   - Input validation and sanitization
-   - Error recovery mechanisms
-   - Context maintenance
-   - State persistence
-   - Progress tracking
-   - Graceful fallbacks
+### Personality vs. Professionalism
 
-## 🎯 Challenges & Solutions
+Keeping Rick's character while conducting real technical interviews. Required extensive prompt engineering to balance sarcasm with actual evaluation.
 
-### 1. Conversation State Management
+### Dynamic Question Generation
 
-**Challenge**: Maintaining context across long conversations while preserving personality
-**Solution**:
-
-- Implemented LangGraph for sophisticated state management
-- MongoDB checkpointing for persistent state storage
-- Custom node definitions for each interview stage
-- Error recovery and state restoration
-- Concurrent user handling
-
-### 2. Personality Consistency
-
-**Challenge**: Balancing Rick's unique personality with professional interview conduct
-**Solution**:
-
-- Carefully crafted prompt templates with personality markers
-- Context-aware personality adaptation
-- Professional fallback mechanisms
-- Response validation for tone consistency
-- Dynamic personality intensity based on context
-
-### 3. Technical Question Generation
-
-**Challenge**: Generating relevant, difficulty-appropriate technical questions
-**Solution**:
-
-- Comprehensive tech stack to question category mapping
-- Experience-based difficulty adjustment
-- Dynamic follow-up question generation
-- Question quality validation
-- Response analysis for follow-ups
-
-### 4. Performance Optimization
-
-**Challenge**: Managing API costs and response times while maintaining quality
-**Solution**:
-
-- Efficient prompt engineering to reduce token usage
-- Response caching for common queries
-- Rate limiting implementation
-- Token usage optimization
-- Batch processing where applicable
-
-### 5. Deployment Complexity
-
-**Challenge**: Managing multiple services and dependencies across environments
-**Solution**:
-
-- Docker containerization for consistent environments
-- Environment variable management
-- Automated deployment scripts
-- Cloud platform optimization
-- Health check implementations
+Creating relevant questions based on candidate tech stack and experience level. Built mapping system between technologies and appropriate question difficulty.
 
 ## 🤝 Contributing
 
