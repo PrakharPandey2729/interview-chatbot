@@ -134,4 +134,4 @@ gcloud run services describe interview-chatbot --platform managed --region us-ce
 gcloud logs tail --service interview-chatbot
 ```
 
-🎉 **Your Rick Sanchez Interview Chatbot should now be live on Google Cloud!**
+**The Rick Sanchez Interview Chatbot should now be live on Google Cloud!**

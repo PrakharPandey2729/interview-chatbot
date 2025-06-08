@@ -6,7 +6,7 @@
   <em>Wubba Lubba Dub Dub! Let's get technical!</em>
 </div>
 
-## 📋 Documentation Index
+## Documentation Index
 
 - [Project Overview](#-project-overview)
 - [Installation Instructions](#-installation-instructions)
@@ -16,7 +16,7 @@
 - [Challenges & Solutions](#-challenges--solutions)
 - [Development & Deployment](#-development--deployment)
 
-## 🎯 Project Overview
+## Project Overview
 
 The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistant that revolutionizes the initial screening process. Built with a unique Rick and Morty personality twist, it combines advanced AI technology with professional interview techniques to create an engaging and efficient candidate screening experience.
 
@@ -73,7 +73,7 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
   - CORS protection
   - Data encryption
 
-## 📋 Installation Instructions
+## Installation Instructions
 
 ### Prerequisites
 
@@ -569,33 +569,9 @@ The backend API is documented using FastAPI's automatic documentation. After sta
   - LangGraph state management optimized for concurrent users
   - Efficient token usage in conversation management
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- OpenAI for GPT-4 API
-- Streamlit for the frontend framework
-- FastAPI for the backend framework
-- MongoDB Atlas for database hosting
-- Google Cloud Run for deployment platform
-- **LangGraph** for conversation orchestration
-- **LangGraph MongoDB Checkpointing** for state persistence
-
-## 📞 Support
-
-For support, please:
-
-1. Check the [troubleshooting guide](#troubleshooting)
-2. Open an issue in the GitHub repository
-3. Contact the maintainers
-
----
 
 <div align="center">
   <em>Made with 💚 and a touch of Rick's genius</em>
