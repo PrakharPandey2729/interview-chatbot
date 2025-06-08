@@ -384,9 +384,9 @@ INTERVIEW_STAGES = {
 
 ### Interview Threading with LangGraph
 
-**📋The Problem**: Building a system that maintains separate conversation threads for each interview topic while preserving context across follow-up questions. Traditional chatbots lose track of conversation threads and can't maintain intelligent topic-based discussions.
+**_The Problem_**: Building a system that maintains separate conversation threads for each interview topic while preserving context across follow-up questions. Traditional chatbots lose track of conversation threads and can't maintain intelligent topic-based discussions.
 
-**✅Our Solution**:
+**_Solution_**:
 
 - Implemented LangGraph with custom state management that tracks both individual question threads (`current_thread`) and overall interview flow (`history`)
 - MongoDB checkpointing ensures threads survive server restarts and allow users to resume exactly where they left off
@@ -394,15 +394,15 @@ INTERVIEW_STAGES = {
 
 ### Personality vs. Technical Evaluation
 
-**📋The Problem**: Maintaining Rick's sarcastic, unpredictable personality while conducting legitimate technical assessments. Can't just be funny - needs to actually evaluate technical competency.
+**_The Problem_**: Maintaining Rick's sarcastic, unpredictable personality while conducting legitimate technical assessments. Can't just be funny - needs to actually evaluate technical competency.
 
-**✅Our Solution**: Extensive prompt engineering to balance character consistency with professional evaluation. Rick stays in character but his questions and follow-ups are technically sound and appropriately challenging.
+**_Solution_**: Extensive prompt engineering to balance character consistency with professional evaluation. Rick stays in character but his questions and follow-ups are technically sound and appropriately challenging.
 
 ### Context-Aware Question Generation
 
-**📋The Problem**: Generating relevant follow-up questions that build on previous answers within the same topic thread, while adapting to different experience levels and tech stacks.
+**_The Problem_**: Generating relevant follow-up questions that build on previous answers within the same topic thread, while adapting to different experience levels and tech stacks.
 
-**✅Our Solution**: Built a mapping system between technologies and question difficulty, with thread-aware follow-up generation that considers the entire conversation context within each topic.
+**_Solution_**: Built a mapping system between technologies and question difficulty, with thread-aware follow-up generation that considers the entire conversation context within each topic.
 
 ## 🤝 Contributing
 
