@@ -166,7 +166,7 @@ def load_common_styles():
         }
         
         .brand-text img {
-            width: 45px !important; /* Smaller image to prevent wrapping */
+            width: 45px !important;
         }
     }
     
