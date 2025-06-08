@@ -73,82 +73,141 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
   - CORS protection
   - Data encryption
 
-## 🚀 Installation Instructions
+## 📋 Installation Instructions
 
 ### Prerequisites
 
-- Python 3.8+
-- Git
-- OpenAI API key
-- MongoDB Atlas account (free tier available)
-- Docker (optional, for containerized deployment)
+- **Required**: Python 3.8+, Git, OpenAI API key
+- **Database**: MongoDB Atlas account (free tier available)
+- **Optional**: Docker (for containerization)
 
-### Detailed Setup Guide
+## 🏠 Local Development Setup
 
-1. **Environment Setup**
+### 1. Environment Setup
+
+```bash
+# Clone repository
+git clone https://github.com/PrakharPandey2729/interview-chatbot.git
+cd interview-chatbot
+
+# Create and activate virtual environment
+python -m venv venv
+# Windows
+.\venv\Scripts\activate
+# Linux/MacOS
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Database Setup
+
+- Create MongoDB Atlas account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+- Set up a free cluster:
+  - Choose "Shared" (free tier)
+  - Select region (same as your deployment region)
+  - Create cluster
+- Configure database access:
+  - Go to "Database Access"
+  - Add new user with username/password
+  - Grant "Atlas admin" privileges
+- Set up network access:
+  - Go to "Network Access"
+  - Add IP address: `0.0.0.0/0` (for development)
+- Get connection string:
+  - Go to "Database" → "Connect" → "Connect your application"
+  - Copy the connection string: `mongodb+srv://username:password@cluster.mongodb.net/`
+
+### 3. Configuration
+
+Create a `.env` file with required variables:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+MONGO_URI=your_mongodb_connection_string
+BACKEND_URL=http://127.0.0.1:8000
+```
+
+## ☁️ Cloud Deployment Setup
+
+### Docker Deployment
+
+1. **Build the Docker Image**
 
    ```bash
-   # Clone repository
-   git clone https://github.com/yourusername/interview-chatbot.git
-   cd interview-chatbot
-
-   # Create and activate virtual environment
-   python -m venv venv
-   # Windows
-   .\venv\Scripts\activate
-   # Linux/MacOS
-   source venv/bin/activate
-
-   # Install dependencies
-   pip install -r requirements.txt
+   docker build -t interview-chatbot .
    ```
 
-2. **Database Setup**
-
-   - Create MongoDB Atlas account at [MongoDB Atlas](https://www.mongodb.com/atlas)
-   - Set up a free cluster:
-     - Choose "Shared" (free tier)
-     - Select region (same as your deployment region)
-     - Create cluster
-   - Configure database access:
-     - Go to "Database Access"
-     - Add new user with username/password
-     - Grant "Atlas admin" privileges
-   - Set up network access:
-     - Go to "Network Access"
-     - Add IP address: `0.0.0.0/0` (for development)
-   - Get connection string:
-     - Go to "Database" → "Connect" → "Connect your application"
-     - Copy the connection string: `mongodb+srv://username:password@cluster.mongodb.net/`
-
-3. **Configuration**
-   Create a `.env` file with required variables:
-
-   ```env
-   OPENAI_API_KEY=your_openai_api_key
-   MONGO_URI=your_mongodb_connection_string
-   BACKEND_URL=http://127.0.0.1:8000
+2. **Run the Container**
+   ```bash
+   docker run -p 8501:8501 -p 8000:8000 \
+     --env-file .env \
+     interview-chatbot
    ```
 
-4. **Start Servers**
+### Google Cloud Run Deployment
 
-   - **Windows**: Run the provided batch file:
+The application is designed for easy deployment to Google Cloud Run. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
 
-     ```bash
-     start_servers_locally.bat
-     ```
+**Quick Cloud Deployment**:
 
-     This will automatically start both the FastAPI backend and Streamlit frontend servers.
+```bash
+gcloud builds submit --tag gcr.io/YOUR-PROJECT-ID/interview-chatbot
+gcloud run deploy interview-chatbot \
+  --image gcr.io/YOUR-PROJECT-ID/interview-chatbot \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+```
 
-   - **Manual Start** (if needed):
+**Production Environment Variables**:
 
-     ```bash
-     # Start backend server
-     uvicorn main:app --reload --port 8000
+```env
+OPENAI_API_KEY=your_openai_api_key
+MONGO_URI=your_production_mongodb_connection_string
+PORT=8000
+```
 
-     # In a new terminal, start the frontend
-     streamlit run app.py
-     ```
+## 🚀 Quick Start
+
+### Option 1: Local Development (Recommended for Testing)
+
+```bash
+# 1. Clone and setup
+git clone https://github.com/PrakharPandey2729/interview-chatbot.git
+cd interview-chatbot
+python -m venv venv && .\venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+
+# 2. Configure environment (create .env file)
+OPENAI_API_KEY=your_key_here
+MONGO_URI=your_mongodb_connection_string
+
+# 3. Start both servers (Windows)
+start_servers_locally.bat
+# Access: http://localhost:8501
+```
+
+### Option 2: Docker Deployment
+
+```bash
+# Build and run with Docker
+docker build -t interview-chatbot .
+docker run -p 8501:8501 -p 8000:8000 --env-file .env interview-chatbot
+```
+
+### Option 3: Cloud Deployment
+
+```bash
+# Deploy to Google Cloud Run - follow the detailed cloud deployment guide above
+gcloud builds submit --tag gcr.io/YOUR-PROJECT-ID/interview-chatbot
+gcloud run deploy interview-chatbot \
+  --image gcr.io/YOUR-PROJECT-ID/interview-chatbot \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated
+```
 
 ## 📖 Usage Guide
 
@@ -414,42 +473,6 @@ The Rick Sanchez Interview Chatbot is an AI-powered technical interview assistan
 - Cloud platform optimization
 - Health check implementations
 
-## 🚀 Quick Start
-
-### 🐳 Docker Deployment
-
-1. **Build the Docker Image**
-
-   ```bash
-   docker build -t interview-chatbot .
-   ```
-
-2. **Run the Container**
-   ```bash
-   docker run -p 8501:8501 -p 8000:8000 \
-     --env-file .env \
-     interview-chatbot
-   ```
-
-## 🌐 Cloud Deployment
-
-The application is designed for easy deployment to Google Cloud Run. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
-
-### Quick Cloud Deployment
-
-```bash
-# Using the deployment script
-./deploy.sh
-
-# Or manually
-gcloud builds submit --tag gcr.io/YOUR-PROJECT-ID/interview-chatbot
-gcloud run deploy interview-chatbot \
-  --image gcr.io/YOUR-PROJECT-ID/interview-chatbot \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated
-```
-
 ## 📊 Architecture
 
 ```
@@ -459,7 +482,6 @@ interview-chatbot/
 ├── rick_agent.py      # Rick Sanchez AI agent implementation with LangGraph
 ├── requirements.txt   # Python dependencies
 ├── Dockerfile        # Container configuration
-├── deploy.sh         # Deployment script
 ├── start_servers_locally.bat  # Windows local development script
 ├── build-and-deploy.bat      # Windows deployment script
 └── .env             # Environment variables (not in repo)
@@ -474,7 +496,6 @@ interview-chatbot/
 - `rick_agent.py`: Core AI agent implementation with Rick's personality and LangGraph integration
 - `requirements.txt`: Project dependencies including LangGraph and MongoDB checkpointing
 - `Dockerfile`: Container configuration
-- `deploy.sh`: Deployment automation script
 - `start_servers_locally.bat`: Windows script for local development
 - `build-and-deploy.bat`: Windows script for deployment
 
