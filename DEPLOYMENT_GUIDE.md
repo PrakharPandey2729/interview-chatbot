@@ -1,4 +1,4 @@
-# 🚀 Google Cloud Run Deployment Guide
+# Google Cloud Run Deployment Guide
 
 ## Prerequisites
 
