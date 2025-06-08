@@ -368,13 +368,14 @@ The system maintains Rick's personality while conducting actual technical interv
 - **Character Consistency**: Rick's sarcasm and catchphrases, but stays on technical topics
 - **Adaptive Questioning**: Questions scale with candidate experience and tech stack
 - **Follow-up Logic**: Evaluates answers and generates relevant follow-ups
-- **Fallback Handling**: When candidates give poor answers, Rick gets appropriately frustrated
+- **Fallback Handling**: When candidates give poor answers, Rick encourages them to try again but gets frustrated appropriatelywhen they don't improve
 
 ```python
 INTERVIEW_STAGES = {
     "greeting": "Initial welcome and overview",
     "technical_qa": "Dynamic question generation",
-    "follow_up": "Context-aware follow-ups"
+    "follow_up": "Context-aware follow-ups if needed",
+    "fallback": "Fallback handling when candidate gives poor answers"
 }
 ```
 
