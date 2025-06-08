@@ -10,11 +10,11 @@
 
 - [Project Overview](#-project-overview)
 - [Installation Instructions](#-installation-instructions)
+- [Quick Start](#-quick-start)
 - [Usage Guide](#-usage-guide)
-- [Technical Details](#-technical-details)
 - [Prompt Design](#-prompt-design)
+- [Technical Architecture](#-technical-architecture)
 - [Challenges & Solutions](#-challenges--solutions)
-- [Development & Deployment](#-development--deployment)
 
 ## Project Overview
 
@@ -226,97 +226,133 @@ gcloud run deploy interview-chatbot \
 - Persistent conversation history
 - Rick's unique personality and style
 
-## 🛠️ Technical Details
+## 🏗️ Technical Architecture
 
-### Core Technologies
+### Core Technologies Stack
 
-- **Frontend**: Streamlit 1.44.1
-- **Backend**: FastAPI 0.115.12
-- **AI Model**: OpenAI GPT-4 Turbo
-- **State Management**: LangGraph 0.4.5
-- **Database**: MongoDB Atlas
-- **Containerization**: Docker
+- **Frontend**: Streamlit 1.44.1 with responsive UI components
+- **Backend**: FastAPI 0.115.12 with async request handling
+- **AI Engine**: OpenAI GPT-4 Turbo with custom prompt engineering
+- **State Management**: LangGraph 0.4.5 with directed graph orchestration
+- **Database**: MongoDB Atlas with embedded document structure
+- **Persistence**: LangGraph MongoDB checkpointing for conversation state
+- **Containerization**: Docker with multi-stage builds
+- **Deployment**: Google Cloud Run with auto-scaling
 
-### Architecture Decisions
+### Project Structure
 
-1. **LangGraph Implementation**
+```
+interview-chatbot/
+├── app.py                        # Streamlit frontend application
+├── main.py                      # FastAPI backend server
+├── rick_agent.py               # Rick Sanchez AI agent with LangGraph
+├── requirements.txt            # Python dependencies
+├── Dockerfile                 # Container configuration
+├── start_servers_locally.bat # Windows local development script
+└── .env                      # Environment variables (not in repo)
+```
 
-   The interview flow is managed through a directed graph with the following structure:
+### LangGraph Conversation Flow
 
-   ```mermaid
-   %%{init: {"theme": "dark", "themeVariables": { "primaryColor": "#ff4c4c", "primaryTextColor": "#ffffff", "primaryBorderColor": "#ff4c4c", "lineColor": "#ffffff", "sectionBkgColor": "#1a1a1a", "altSectionBkgColor": "#2a2a2a", "gridColor": "#333333", "secondaryColor": "#a8c8ec", "tertiaryColor": "#1a1a1a"}}}%%
-   graph TD
-       %% Entry Points
-       Start([__start__]) --> EntryRouter{determine_entry_point}
+The interview flow is managed through a sophisticated directed graph:
 
-       %% Greeting Flow
-       EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
-       EntryRouter -->|Has Response| GreetingResponse[Process Greeting]
-       EntryRouter -->|Ready to Start| Evaluator[Evaluate Response]
+```mermaid
+%%{init: {"theme": "dark", "themeVariables": { "primaryColor": "#ff4c4c", "primaryTextColor": "#ffffff", "primaryBorderColor": "#ff4c4c", "lineColor": "#ffffff", "sectionBkgColor": "#1a1a1a", "altSectionBkgColor": "#2a2a2a", "gridColor": "#333333", "secondaryColor": "#a8c8ec", "tertiaryColor": "#1a1a1a"}}}%%
+graph TD
+    %% Entry Points
+    Start([__start__]) --> EntryRouter{determine_entry_point}
 
-       %% Greeting Response Flow
-       GreetingResponse --> GreetRouter{greeting_response_router}
-       GreetRouter -->|Not Ready| GreetCandidate
-       GreetRouter -->|Ready| RickAgent[Generate Question]
+    %% Interview State - Central state management
+    InterviewState[(Interview State<br/>• candidate_name<br/>• tech_stack<br/>• chat_history<br/>• current_question_index<br/>• last_response)]
 
-       %% Main Interview Flow
-       RickAgent --> End3([End - Show Question])
-       Evaluator --> EvalRouter{evaluation_decision}
-       EvalRouter -->|Relevant| FollowUpCheck[Check Follow-up]
-       EvalRouter -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
+    %% Greeting Flow
+    EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
+    EntryRouter -->|Has Response| GreetingResponse[Process Greeting]
+    EntryRouter -->|Ready to Start| Evaluator[Evaluate Response]
 
-       %% Follow-up Flow
-       FollowUpCheck --> FollowUpRouter{followup_router}
-       FollowUpRouter -->|Generated Follow-up| End1([End - Show Follow-up Question])
-       FollowUpRouter -->|No Follow-up Generated| RickAgent
+    %% State flows through all nodes
+    InterviewState -.-> GreetCandidate
+    InterviewState -.-> GreetingResponse
+    InterviewState -.-> RickAgent
+    InterviewState -.-> Evaluator
+    InterviewState -.-> FollowUpCheck
+    InterviewState -.-> FallbackAgent
 
-       %% Fallback Flow
-       FallbackAgent --> FallbackRouter{fallback_router}
-       FallbackRouter -->|More than 3 Attempts| RickAgent
-       FallbackRouter -->|Normal Fallback| End2([End - Show Fallback Response])
+    %% Greeting Response Flow
+    GreetingResponse --> GreetRouter{greeting_response_router}
+    GreetRouter -->|Not Ready| GreetCandidate
+    GreetRouter -->|Ready| RickAgent[Generate Question]
 
-       %% Legend
-       Legend[Legend:<br/>🔷 Diamonds = Routing Functions<br/>📦 Rectangles = Process Nodes<br/>⭕ Circles = Terminal Nodes]
+    %% Main Interview Flow
+    RickAgent --> End3([End])
+    Evaluator --> EvalRouter{evaluation_decision}
+    EvalRouter -->|Relevant| FollowUpCheck[Check Follow-up]
+    EvalRouter -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
 
-       %% Node Styles
-       classDef process fill:#ff4c4c,stroke:#ffffff,stroke-width:2px,color:#ffffff
-       classDef decision fill:#a8c8ec,stroke:#ffffff,stroke-width:2px,color:#000000
-       classDef endpoint fill:#4ade80,stroke:#ffffff,stroke-width:2px,color:#000000
-       classDef legend fill:#333333,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    %% Follow-up Flow
+    FollowUpCheck --> FollowUpRouter{followup_router}
+    FollowUpRouter -->|Generated Follow-up| End1([End])
+    FollowUpRouter -->|No Follow-up Generated| RickAgent
 
-       class GreetCandidate,Evaluator,GreetingResponse,FollowUpCheck,FallbackAgent process
-       class EntryRouter,GreetRouter,EvalRouter,FollowUpRouter,FallbackRouter decision
-       class Start,End1,End2,End3,RickAgent endpoint
-       class Legend legend
-   ```
+    %% Fallback Flow
+    FallbackAgent --> FallbackRouter{fallback_router}
+    FallbackRouter -->|More than 3 Attempts| RickAgent
+    FallbackRouter -->|Normal Fallback| End2([End])
 
-   Key Components:
+    %% Legend
+    Legend[Legend:<br/>🔷 Diamonds = Routing Functions<br/>📦 Rectangles = Process Nodes<br/>⭕ Circles = Terminal Nodes<br/>🗄️ Cylinder = Shared State]
 
-   - **Entry Point Router**: Smart routing based on current state
-   - **Greeting Flow**: Handles initial interaction and readiness check
-   - **Question Generation**: Creates personalized technical questions
-   - **Answer Evaluation**: Assesses response quality
-   - **Follow-up System**: Generates context-aware follow-up questions
-   - **Fallback System**: Handles poor or irrelevant responses
-   - **State Persistence**: MongoDB checkpointing for conversation state
+    %% Node Styles
+    classDef process fill:#ff4c4c,stroke:#ffffff,stroke-width:2px,color:#ffffff
+    classDef decision fill:#a8c8ec,stroke:#ffffff,stroke-width:2px,color:#000000
+    classDef endpoint fill:#4ade80,stroke:#ffffff,stroke-width:2px,color:#000000
+    classDef state fill:#fbbf24,stroke:#ffffff,stroke-width:2px,color:#000000
+    classDef legend fill:#333333,stroke:#ffffff,stroke-width:1px,color:#ffffff
 
-   The graph ensures:
+    class GreetCandidate,Evaluator,GreetingResponse,FollowUpCheck,FallbackAgent,RickAgent process
+    class EntryRouter,GreetRouter,EvalRouter,FollowUpRouter,FallbackRouter decision
+    class Start,End1,End2,End3 endpoint
+    class InterviewState state
+    class Legend legend
+```
 
-   - Natural conversation flow
-   - Context-aware question generation
-   - Graceful error handling
-   - State persistence across sessions
-   - Concurrent user support
+**Key Components:**
 
-2. **API Design**
+- **Entry Point Router**: Smart routing based on current state
+- **Greeting Flow**: Handles initial interaction and readiness check
+- **Question Generation**: Creates personalized technical questions
+- **Answer Evaluation**: Assesses response quality
+- **Follow-up System**: Generates context-aware follow-up questions
+- **Fallback System**: Handles poor or irrelevant responses
+- **State Persistence**: MongoDB checkpointing for conversation state
+
+### Core System Components
+
+1. **LangGraph Integration**
+
+   - Sophisticated conversation state management
+   - Directed acyclic graph (DAG) for interview flow control
+   - State persistence using MongoDB checkpointing
+   - Custom node definitions for interview stages
+   - Error handling and recovery mechanisms
+
+2. **Interview Flow Management**
+
+   - Multi-stage interview process
+   - Dynamic question generation based on tech stack
+   - Experience level adaptation
+   - Context preservation across sessions
+   - Graceful conversation termination
+
+3. **API Design**
 
    - RESTful endpoints for interview management
-   - WebSocket for real-time updates
    - Rate limiting and request validation
    - Error handling middleware
    - CORS configuration
+   - FastAPI automatic documentation
 
-3. **Database Schema**
+4. **Database Architecture**
 
    ```json
    {
@@ -342,15 +378,41 @@ gcloud run deploy interview-chatbot \
    }
    ```
 
-   The schema uses a single collection `candidates` with embedded chat history. Key features:
+   **Schema Features:**
 
+   - Single collection design with embedded chat history
    - Unique email constraint for registration
-   - Embedded chat history with timestamps
-   - Tech stack and experience tracking
+   - Timestamped conversation tracking
+   - Tech stack and experience modeling
    - Role preferences storage
-   - MongoDB ObjectId as primary key
+   - LangGraph state stored separately via `langgraph-checkpoint-mongodb`
 
-   Note: The LangGraph state is stored separately in MongoDB using the `langgraph-checkpoint-mongodb` package.
+5. **Security & Performance Features**
+   - Environment variable protection
+   - API key management
+   - MongoDB Atlas integration
+   - CORS protection
+   - Rate limiting
+   - Input validation and sanitization
+   - Token usage optimization
+   - Response caching for common queries
+
+### Development Tools
+
+- **Local Development**: Windows batch scripts for server management
+- **Containerization**: Docker with optimized multi-stage builds
+- **Cloud Deployment**: Google Cloud Run with auto-scaling
+- **API Documentation**: FastAPI automatic OpenAPI documentation
+- **Environment Management**: `.env` file configuration
+- **Monitoring**: Built-in logging and error tracking
+
+### API Documentation
+
+The backend API provides comprehensive documentation:
+
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
+- **OpenAPI Schema**: Auto-generated with request/response models
 
 ## 🎨 Prompt Design
 
@@ -450,87 +512,22 @@ gcloud run deploy interview-chatbot \
 - Cloud platform optimization
 - Health check implementations
 
-## 📊 Architecture
+## 🤝 Contributing
 
-```
-interview-chatbot/
-├── app.py              # Streamlit frontend application
-├── main.py            # FastAPI backend server
-├── rick_agent.py      # Rick Sanchez AI agent implementation with LangGraph
-├── requirements.txt   # Python dependencies
-├── Dockerfile        # Container configuration
-├── start_servers_locally.bat  # Windows local development script
-├── build-and-deploy.bat      # Windows deployment script
-└── .env             # Environment variables (not in repo)
-```
-
-## 🛠️ Development
-
-### Project Structure
-
-- `app.py`: Streamlit frontend with UI components and user interaction
-- `main.py`: FastAPI backend handling API requests and business logic
-- `rick_agent.py`: Core AI agent implementation with Rick's personality and LangGraph integration
-- `requirements.txt`: Project dependencies including LangGraph and MongoDB checkpointing
-- `Dockerfile`: Container configuration
-- `start_servers_locally.bat`: Windows script for local development
-- `build-and-deploy.bat`: Windows script for deployment
-
-### Key Technical Components
-
-1. **LangGraph Integration**
-
-   - Sophisticated conversation state management
-   - Directed acyclic graph (DAG) for interview flow control
-   - State persistence using MongoDB checkpointing
-   - Custom node definitions for interview stages
-   - Error handling and recovery mechanisms
-
-2. **Interview Flow Management**
-
-   - Multi-stage interview process
-   - Dynamic question generation based on tech stack
-   - Experience level adaptation
-   - Context preservation across sessions
-   - Graceful conversation termination
-
-3. **State Management**
-
-   - MongoDB checkpointing for conversation state
-   - Session persistence across server restarts
-   - Candidate data storage and retrieval
-   - Interview progress tracking
-   - Error recovery mechanisms
-
-4. **Security Features**
-
-   - Environment variable protection
-   - API key management
-   - MongoDB Atlas integration
-   - CORS protection
-   - Rate limiting
-   - Input validation and sanitization
-
-5. **Development Tools**
-   - Windows batch scripts for local development
-   - Docker containerization
-   - Cloud deployment automation
-   - Environment configuration management
-   - Logging and monitoring
-
-### Adding New Features
+Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
-2. Create a feature branch
-3. Implement your changes
-4. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📝 API Documentation
+### Development Guidelines
 
-The backend API is documented using FastAPI's automatic documentation. After starting the server, visit:
-
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- Follow PEP 8 style guide for Python code
+- Add comprehensive tests for new features
+- Update documentation for API changes
+- Ensure compatibility with existing LangGraph flows
 
 ## 🔧 Troubleshooting
 
@@ -572,6 +569,24 @@ The backend API is documented using FastAPI's automatic documentation. After sta
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT-4 API
+- Streamlit for the frontend framework
+- FastAPI for the backend framework
+- MongoDB Atlas for database hosting
+- Google Cloud Run for deployment platform
+- **LangGraph** for conversation orchestration
+- **LangGraph MongoDB Checkpointing** for state persistence
+
+## 📞 Support
+
+For support, please:
+
+1. Check the [troubleshooting guide](#-troubleshooting)
+2. Open an issue in the GitHub repository
+3. Contact the maintainers
 
 <div align="center">
   <em>Made with 💚 and a touch of Rick's genius</em>
