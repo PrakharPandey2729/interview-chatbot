@@ -114,18 +114,17 @@ def load_common_styles():
         .logo-header {
             font-size: 1.8em !important;
             gap: 6px;
-            margin-bottom: 15px;
+            margin-bottom: 10px !important;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 10px 5px;
-            position: relative;
+            padding: 5px 0 !important;
+            position: relative !important;
             z-index: 10;
         }
         .welcome-text {
             display: block;
             margin-bottom: -10px;
-            font-size: 1em;
         }
 
         .brand-text {
@@ -147,18 +146,44 @@ def load_common_styles():
             padding-top: 2.5rem !important;
         }
         
-        .logo-header {
-            position: relative !important;
-            padding: 5px 0 !important;
-            margin-bottom: 10px !important;
-        }
-        
         .title {
             font-size: 1.8em !important;
         }
                 
         .logo-container img {
             width: 108px !important;
+        }
+    }
+    
+    @media (max-width: 400px) {
+        .logo-header {
+            font-size: 1.35em !important;
+            margin-bottom: -5px !important;
+        }
+        
+        .title {
+            font-size: 1.35em !important;
+        }
+        
+        .brand-text img {
+            width: 45px !important; /* Smaller image to prevent wrapping */
+        }
+    }
+    
+    @media (max-width: 416px) {
+        h2 {
+            font-size: 1.7em !important;
+        }
+    }
+
+    @media (max-width: 355px) {
+        h3 {
+            font-size: 1.5em !important;
+        }
+        
+        div[data-testid="stExpander"] img {
+            width: 220px !important;
+            height: 120px !important;
         }
     }
     

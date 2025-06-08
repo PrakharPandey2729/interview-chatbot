@@ -18,7 +18,7 @@ COPY . .
 
 # Create streamlit config
 RUN mkdir -p ~/.streamlit/ && \
-    echo "[server]\nheadless = true\nenableCORS = false\nport = 8080\naddress = \"0.0.0.0\"\n" > ~/.streamlit/config.toml
+    echo "[server]\nheadless = true\nenableCORS = true\nenableXsrfProtection = true\nport = 8080\naddress = \"0.0.0.0\"\n\n[theme]\nbase = \"dark\"\nprimaryColor = \"#ff4c4c\"\nbackgroundColor = \"#0f0f0f\"\nsecondaryBackgroundColor = \"#1a1a1a\"\ntextColor = \"#ffffff\"\n" > ~/.streamlit/config.toml
 
 # Expose port
 EXPOSE 8080
