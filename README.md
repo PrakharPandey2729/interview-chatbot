@@ -6,7 +6,7 @@
   <em>Wubba Lubba Dub Dub! Let's get technical!</em>
   <br/><br/>
   <a href="https://interview-chatbot-92228600602.us-central1.run.app" target="_blank">
-    <strong>👁️ Try the Live Demo</strong>
+    <strong>Try the Live Demo</strong>
   </a>
 </div>
 
