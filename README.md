@@ -373,10 +373,8 @@ The system maintains Rick's personality while conducting actual technical interv
 ```python
 INTERVIEW_STAGES = {
     "greeting": "Initial welcome and overview",
-    "tech_stack": "Gather technical background",
     "technical_qa": "Dynamic question generation",
-    "follow_up": "Context-aware follow-ups",
-    "conclusion": "Summary and next steps"
+    "follow_up": "Context-aware follow-ups"
 }
 ```
 
