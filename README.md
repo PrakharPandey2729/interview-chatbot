@@ -30,9 +30,10 @@ A technical interview chatbot with Rick Sanchez's personality. Candidates answer
 
 - Conducts actual technical interviews based on candidate's tech stack
 - Maintains Rick's personality (burps, sarcasm, scientific references)
-- Generates follow-up questions based on answer quality
-- Tracks conversation state across sessions using LangGraph
-- Stores full interview history in MongoDB
+- **Interview Threading**: Uses LangGraph to maintain conversation threads with intelligent follow-up questions
+- **State Persistence**: Tracks full conversation context across sessions, including question history and candidate progress
+- **Smart Routing**: LangGraph nodes handle different interview stages (greeting, evaluation, fallbacks)
+- Stores complete interview threads in MongoDB with timestamps
 
 ### How It Works
 
@@ -189,11 +190,11 @@ gcloud run deploy interview-chatbot \
 
 ### Key Features
 
-- Dynamic question generation based on your tech stack
-- Experience-level appropriate questions
-- Context-aware follow-up questions
-- Persistent conversation history
-- Rick's unique personality and style
+- **Dynamic Question Generation**: Questions tailored to your specific tech stack and experience level
+- **Interview Threading**: LangGraph maintains conversation threads - Rick remembers what you've discussed and builds on previous answers
+- **Intelligent Follow-ups**: System evaluates your responses and generates relevant follow-up questions within each topic thread
+- **Session Persistence**: Your interview thread continues exactly where you left off, even after closing the browser
+- **Rick's Character**: Maintains authentic Rick Sanchez personality throughout the threaded conversation
 
 ## 🏗️ Technical Architecture
 
@@ -219,9 +220,16 @@ interview-chatbot/
 └── .env                      # Environment variables (not in repo)
 ```
 
-### LangGraph Flow
+### LangGraph Interview Threading
 
-The interview conversation is managed through this directed graph:
+LangGraph manages the entire interview as a stateful conversation thread. Each interview creates a persistent thread that:
+
+- **Maintains Context**: Remembers all previous questions and answers within the current topic thread
+- **Routes Intelligently**: Determines whether to ask follow-ups, move to next questions, or handle fallbacks
+- **Preserves State**: MongoDB checkpointing ensures threads survive server restarts
+- **Handles Concurrency**: Multiple users can have simultaneous interview threads
+
+The conversation flow is managed through this directed graph:
 
 ```mermaid
 %%{init: {"theme": "dark", "themeVariables": { "primaryColor": "#ff4c4c", "primaryTextColor": "#ffffff", "primaryBorderColor": "#ff4c4c", "lineColor": "#ffffff", "sectionBkgColor": "#1a1a1a", "altSectionBkgColor": "#2a2a2a", "gridColor": "#333333", "secondaryColor": "#a8c8ec", "tertiaryColor": "#1a1a1a"}}}%%
@@ -321,7 +329,7 @@ class InterviewState(TypedDict):
     _routing: str                        # Internal routing information
 ```
 
-The state persists conversation context, tracks follow-up threads, and handles routing decisions across the entire interview flow.
+**Thread Management**: This state structure enables LangGraph to maintain separate conversation threads for each question topic. The `current_thread` field tracks the specific question-answer-followup sequence, while `history` maintains the complete interview conversation. MongoDB checkpointing ensures threads persist across sessions.
 
 ### Database Schema
 
@@ -365,7 +373,6 @@ The system maintains Rick's personality while conducting actual technical interv
 ```python
 INTERVIEW_STAGES = {
     "greeting": "Initial welcome and overview",
-    "candidate_info": "Collect basic information",
     "tech_stack": "Gather technical background",
     "technical_qa": "Dynamic question generation",
     "follow_up": "Context-aware follow-ups",
@@ -375,17 +382,27 @@ INTERVIEW_STAGES = {
 
 ## 🎯 Key Implementation Challenges
 
-### LangGraph State Management
+### Interview Threading with LangGraph
 
-Managing conversation state across Rick's personality changes and interview stages. Solved with MongoDB checkpointing and careful state transitions.
+**The Problem**: Building a system that maintains separate conversation threads for each interview topic while preserving context across follow-up questions. Traditional chatbots lose track of conversation threads and can't maintain intelligent topic-based discussions.
 
-### Personality vs. Professionalism
+**Our Solution**:
 
-Keeping Rick's character while conducting real technical interviews. Required extensive prompt engineering to balance sarcasm with actual evaluation.
+- Implemented LangGraph with custom state management that tracks both individual question threads (`current_thread`) and overall interview flow (`history`)
+- MongoDB checkpointing ensures threads survive server restarts and allow users to resume exactly where they left off
+- Smart routing between nodes based on thread context - system knows when to continue a thread vs. start a new topic
 
-### Dynamic Question Generation
+### Personality vs. Technical Evaluation
 
-Creating relevant questions based on candidate tech stack and experience level. Built mapping system between technologies and appropriate question difficulty.
+**The Problem**: Maintaining Rick's sarcastic, unpredictable personality while conducting legitimate technical assessments. Can't just be funny - needs to actually evaluate technical competency.
+
+**Our Solution**: Extensive prompt engineering to balance character consistency with professional evaluation. Rick stays in character but his questions and follow-ups are technically sound and appropriately challenging.
+
+### Context-Aware Question Generation
+
+**The Problem**: Generating relevant follow-up questions that build on previous answers within the same topic thread, while adapting to different experience levels and tech stacks.
+
+**Our Solution**: Built a mapping system between technologies and question difficulty, with thread-aware follow-up generation that considers the entire conversation context within each topic.
 
 ## 🤝 Contributing
 
