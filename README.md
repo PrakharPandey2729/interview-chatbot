@@ -4,6 +4,10 @@
   <img src="techrickal.png" alt="Rick Sanchez Interview Bot" width="200"/>
   <br/>
   <em>Wubba Lubba Dub Dub! Let's get technical!</em>
+  <br/><br/>
+  <a href="https://interview-chatbot-92228600602.us-central1.run.app" target="_blank">
+    <strong>👁️ Try the Live Demo</strong>
+  </a>
 </div>
 
 ## 📋 Documentation Index
@@ -19,6 +23,8 @@
 ## What This Is
 
 A technical interview chatbot with Rick Sanchez's personality. Candidates answer tech questions while Rick roasts their responses with his characteristic sarcasm.
+
+**👁️ Live Demo**: [https://interview-chatbot-92228600602.us-central1.run.app](https://interview-chatbot-92228600602.us-central1.run.app)
 
 ### What It Does
 
