@@ -131,21 +131,6 @@ BACKEND_URL=http://127.0.0.1:8000
 
 ## ☁️ Cloud Deployment Setup
 
-### Docker Deployment
-
-1. **Build the Docker Image**
-
-   ```bash
-   docker build -t interview-chatbot .
-   ```
-
-2. **Run the Container**
-   ```bash
-   docker run -p 8501:8501 -p 8000:8000 \
-     --env-file .env \
-     interview-chatbot
-   ```
-
 ### Google Cloud Run Deployment
 
 The application is designed for easy deployment to Google Cloud Run. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
@@ -189,15 +174,7 @@ start_servers_locally.bat
 # Access: http://localhost:8501
 ```
 
-### Option 2: Docker Deployment
-
-```bash
-# Build and run with Docker
-docker build -t interview-chatbot .
-docker run -p 8501:8501 -p 8000:8000 --env-file .env interview-chatbot
-```
-
-### Option 3: Cloud Deployment
+### Option 2: Cloud Deployment
 
 ```bash
 # Deploy to Google Cloud Run - follow the detailed cloud deployment guide above
@@ -625,25 +602,3 @@ For support, please:
   <br/>
   <sub>Remember: "To be fair, you have to have a very high IQ to understand this chatbot..."</sub>
 </div>
-
-## 📈 Performance Metrics
-
-### Response Times
-
-- Average API response: < 2 seconds
-- Question generation: < 3 seconds
-- State persistence: < 1 second
-
-### Resource Usage
-
-- Memory: 2GB (LangGraph operations)
-- CPU: 1 vCPU
-- Storage: 512MB
-- API Calls: ~100 per interview
-
-### Cost Optimization
-
-- Token usage: ~2000 per interview
-- API calls: Optimized for cost
-- Storage: Efficient data structure
-- Caching: Implemented where possible

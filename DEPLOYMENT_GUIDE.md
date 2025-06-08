@@ -42,34 +42,6 @@ gcloud config set project YOUR-PROJECT-ID
 gcloud config list
 ```
 
-## Setup MongoDB Database
-
-### Option 1: MongoDB Atlas (Recommended - Free Tier Available)
-
-1. **Go to [MongoDB Atlas](https://www.mongodb.com/atlas)**
-2. **Create free account** and sign in
-3. **Create a cluster:**
-   - Choose "Shared" (free tier)
-   - Select region (same as your GCP region for best performance)
-   - Create cluster
-4. **Create database user:**
-   - Go to "Database Access"
-   - Add new user with username/password
-   - Give "Atlas admin" privileges
-5. **Whitelist IP addresses:**
-   - Go to "Network Access"
-   - Add IP address: `0.0.0.0/0` (allows all IPs - for development)
-6. **Get connection string:**
-   - Go to "Database" → "Connect" → "Connect your application"
-   - Copy the connection string: `mongodb+srv://username:password@cluster.mongodb.net/`
-
-### Option 2: Google Cloud Firestore (Alternative)
-
-```bash
-gcloud services enable firestore.googleapis.com
-gcloud firestore databases create --region=us-central1
-```
-
 ## Get API Keys
 
 ### 1. OpenAI API Key
@@ -90,25 +62,6 @@ BACKEND_URL=http://127.0.0.1:8000
 ```
 
 ## Deploy to Google Cloud Run
-
-### Method 1: Using the Deployment Script (Recommended)
-
-1. **Set environment variables:**
-
-```bash
-export PROJECT_ID=your-google-cloud-project-id
-export OPENAI_API_KEY=your-openai-api-key
-export MONGO_URI=your-mongodb-connection-string
-```
-
-2. **Make script executable and run:**
-
-```bash
-chmod +x deploy.sh
-./deploy.sh
-```
-
-### Method 2: Manual Deployment
 
 1. **Enable required APIs:**
 
@@ -180,26 +133,5 @@ gcloud run services describe interview-chatbot --platform managed --region us-ce
 ```bash
 gcloud logs tail --service interview-chatbot
 ```
-
-## Cost Estimation
-
-- **Google Cloud Run:** Free tier includes 2 million requests/month
-- **MongoDB Atlas:** Free tier includes 512MB storage
-- **OpenAI API:** Pay per usage (typically $0.002 per 1K tokens)
-
-**Total estimated cost for development/testing: $0-5/month**
-
-## Security Notes
-
-- Never commit API keys to Git
-- Use Google Secret Manager for production deployments
-- Configure proper CORS origins for production
-- Set up proper authentication for production use
-
-## Need Help?
-
-- Check Google Cloud Run logs for errors
-- MongoDB Atlas has excellent documentation
-- OpenAI has comprehensive API docs
 
 🎉 **Your Rick Sanchez Interview Chatbot should now be live on Google Cloud!**
