@@ -435,21 +435,21 @@ Contributions are welcome! Please follow these steps:
    - Check port availability (8000, 8501)
    - Verify virtual environment activation
 
-## 📈 Performance & Scaling
+## 📈 Scaling Considerations
 
-- **Resource Requirements**
+- **Current Production Capabilities**
 
-  - Memory: 2GB minimum (increased for LangGraph operations)
-  - CPU: 1 vCPU minimum
-  - Storage: 512MB minimum
-  - MongoDB Atlas: Free tier sufficient for development
-
-- **Scaling Considerations**
   - Horizontal scaling supported via Cloud Run
   - MongoDB Atlas handles database scaling
-  - Rate limiting implemented for API protection
   - LangGraph state management optimized for concurrent users
   - Efficient token usage in conversation management
+  - Session persistence across server restarts
+
+- **Production Readiness Limitations**
+  - ⚠️ **No rate limiting implemented** - vulnerable to API abuse
+  - ⚠️ **Passwords stored in plain text** - security risk for production
+  - ⚠️ **No input validation/sanitization** - potential security vulnerability
+  - ⚠️ **CORS set to allow all origins** - should be restricted in production
 
 ## 📄 License
 
