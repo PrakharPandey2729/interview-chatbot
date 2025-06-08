@@ -174,13 +174,12 @@ def load_common_styles():
         h2 {
             font-size: 1.7em !important;
         }
-    }
-
-    @media (max-width: 355px) {
         h3 {
             font-size: 1.5em !important;
         }
-        
+    }
+
+    @media (max-width: 370px) {
         div[data-testid="stExpander"] img {
             width: 220px !important;
             height: 120px !important;
