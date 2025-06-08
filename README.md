@@ -263,7 +263,7 @@ graph TD
     Start([__start__]) --> EntryRouter{determine_entry_point}
 
     %% Interview State - Central state management
-    InterviewState[(Interview State<br/>• candidate_name<br/>• tech_stack<br/>• chat_history<br/>• current_question_index<br/>• last_response)]
+    InterviewState[(Interview State<br/>• candidate_name: str<br/>• tech_stack: List[str]<br/>• experience: dict<br/>• interested_roles: List[str]<br/>• current_question_index: int<br/>• questions: List[str]<br/>• history: List[dict]<br/>• last_response: str<br/>• greeting_done: bool<br/>• ready_to_start: bool<br/>• current_base_question: str<br/>• follow_up_count: int<br/>• current_thread: List[dict]<br/>• fallback_attempts: int<br/>• last_evaluation: str<br/>• _routing: str)]
 
     %% Greeting Flow
     EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
@@ -284,7 +284,6 @@ graph TD
     GreetRouter -->|Ready| RickAgent[Generate Question]
 
     %% Main Interview Flow
-    RickAgent --> End3([End])
     Evaluator --> EvalRouter{evaluation_decision}
     EvalRouter -->|Relevant| FollowUpCheck[Check Follow-up]
     EvalRouter -->|Irrelevant/Gibberish| FallbackAgent[Generate Fallback]
@@ -325,6 +324,42 @@ graph TD
 - **Follow-up System**: Generates context-aware follow-up questions
 - **Fallback System**: Handles poor or irrelevant responses
 - **State Persistence**: MongoDB checkpointing for conversation state
+
+### Interview State Structure
+
+The complete Interview State that flows through all LangGraph nodes:
+
+```python
+class InterviewState(TypedDict):
+    # Candidate Information
+    candidate_name: str                    # Candidate's full name
+    tech_stack: List[str]                 # Technologies they work with
+    experience: dict                      # Years and months of experience
+    interested_roles: List[str]           # Roles they're interested in
+
+    # Interview Progress
+    current_question_index: int           # Index of current question
+    questions: List[str]                  # List of generated questions
+    history: List[dict]                   # Full conversation history
+    last_response: str                    # Last user/bot response
+
+    # Flow Control
+    greeting_done: bool                   # Whether greeting is complete
+    ready_to_start: bool                 # Whether candidate is ready
+    current_base_question: str           # Current main question
+    follow_up_count: int                 # Number of follow-ups asked
+    current_thread: List[dict]           # Current question thread
+    fallback_attempts: int               # Number of fallback attempts
+    last_evaluation: str                 # Last answer evaluation result
+    _routing: str                        # Internal routing information
+```
+
+This state structure enables:
+
+- **Conversation Continuity**: Maintains context across all interactions
+- **Dynamic Question Generation**: Adapts questions based on candidate profile
+- **Thread Management**: Tracks follow-up questions and conversation threads
+- **Error Recovery**: Handles fallback scenarios and routing decisions
 
 ### Core System Components
 
@@ -522,13 +557,6 @@ Contributions are welcome! Please follow these steps:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-### Development Guidelines
-
-- Follow PEP 8 style guide for Python code
-- Add comprehensive tests for new features
-- Update documentation for API changes
-- Ensure compatibility with existing LangGraph flows
-
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -569,24 +597,6 @@ Contributions are welcome! Please follow these steps:
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- OpenAI for GPT-4 API
-- Streamlit for the frontend framework
-- FastAPI for the backend framework
-- MongoDB Atlas for database hosting
-- Google Cloud Run for deployment platform
-- **LangGraph** for conversation orchestration
-- **LangGraph MongoDB Checkpointing** for state persistence
-
-## 📞 Support
-
-For support, please:
-
-1. Check the [troubleshooting guide](#-troubleshooting)
-2. Open an issue in the GitHub repository
-3. Contact the maintainers
 
 <div align="center">
   <em>Made with 💚 and a touch of Rick's genius</em>
