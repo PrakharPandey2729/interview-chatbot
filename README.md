@@ -57,18 +57,18 @@ A technical interview chatbot with Rick Sanchez's personality. Candidates answer
 
 ```bash
 # Clone repository
-git clone https://github.com/PrakharPandey2729/interview-chatbot.git
-cd interview-chatbot
+   git clone https://github.com/PrakharPandey2729/interview-chatbot.git
+   cd interview-chatbot
 
 # Create and activate virtual environment
-python -m venv venv
+   python -m venv venv
 # Windows
 .\venv\Scripts\activate
 # Linux/MacOS
 source venv/bin/activate
 
 # Install dependencies
-pip install -r requirements.txt
+   pip install -r requirements.txt
 ```
 
 ### 2. Database Setup
@@ -384,9 +384,9 @@ INTERVIEW_STAGES = {
 
 ### Interview Threading with LangGraph
 
-**The Problem**: Building a system that maintains separate conversation threads for each interview topic while preserving context across follow-up questions. Traditional chatbots lose track of conversation threads and can't maintain intelligent topic-based discussions.
+**<u>The Problem</u>**: Building a system that maintains separate conversation threads for each interview topic while preserving context across follow-up questions. Traditional chatbots lose track of conversation threads and can't maintain intelligent topic-based discussions.
 
-**Our Solution**:
+**<u>Our Solution</u>**:
 
 - Implemented LangGraph with custom state management that tracks both individual question threads (`current_thread`) and overall interview flow (`history`)
 - MongoDB checkpointing ensures threads survive server restarts and allow users to resume exactly where they left off
@@ -394,15 +394,15 @@ INTERVIEW_STAGES = {
 
 ### Personality vs. Technical Evaluation
 
-**The Problem**: Maintaining Rick's sarcastic, unpredictable personality while conducting legitimate technical assessments. Can't just be funny - needs to actually evaluate technical competency.
+**<u>The Problem</u>**: Maintaining Rick's sarcastic, unpredictable personality while conducting legitimate technical assessments. Can't just be funny - needs to actually evaluate technical competency.
 
-**Our Solution**: Extensive prompt engineering to balance character consistency with professional evaluation. Rick stays in character but his questions and follow-ups are technically sound and appropriately challenging.
+**<u>Our Solution</u>**: Extensive prompt engineering to balance character consistency with professional evaluation. Rick stays in character but his questions and follow-ups are technically sound and appropriately challenging.
 
 ### Context-Aware Question Generation
 
-**The Problem**: Generating relevant follow-up questions that build on previous answers within the same topic thread, while adapting to different experience levels and tech stacks.
+**<u>The Problem</u>**: Generating relevant follow-up questions that build on previous answers within the same topic thread, while adapting to different experience levels and tech stacks.
 
-**Our Solution**: Built a mapping system between technologies and question difficulty, with thread-aware follow-up generation that considers the entire conversation context within each topic.
+**<u>Our Solution</u>**: Built a mapping system between technologies and question difficulty, with thread-aware follow-up generation that considers the entire conversation context within each topic.
 
 ## 🤝 Contributing
 
