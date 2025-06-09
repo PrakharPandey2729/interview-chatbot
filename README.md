@@ -187,7 +187,7 @@ gcloud run deploy interview-chatbot \
 - **End Interview**: Ends the session and logs you out
 - **Log Out**: Logs out while preserving your session
 
-### Returning Users**: Your previous conversation will be loaded automatically
+### Returning Users: Your previous conversation will be loaded automatically
 
 ### Key Features
 
