@@ -237,7 +237,7 @@ graph TD
     Start([__start__]) --> EntryRouter{determine_entry_point}
 
     %% Interview State - Central state management
-    InterviewState[(Interview State<br/>• candidate_name<br/>• tech_stack<br/>• experience<br/>• interested_roles<br/>• current_question_index<br/>• questions<br/>• history<br/>• last_response<br/>• greeting_done<br/>• ready_to_start<br/>• current_base_question<br/>• follow_up_count<br/>• current_thread<br/>• fallback_attempts<br/>• last_evaluation<br/>• _routing)]
+    InterviewState[(Interview State<br/>• candidate_name<br/>• tech_stack<br/>• experience<br/>• interested_roles<br/>• current_question_index<br/>• questions<br/>• history<br/>• last_response<br/>• greeting_done<br/>• ready_to_start<br/>• **current_base_question**<br/>• follow_up_count<br/>• **current_thread**<br/>• fallback_attempts<br/>• last_evaluation<br/>• _routing)]
 
     %% Greeting Flow
     EntryRouter -->|No Greeting| GreetCandidate[Greet Candidate]
