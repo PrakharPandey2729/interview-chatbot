@@ -16,7 +16,7 @@
 - [Setup & Installation](#-setup--installation)
 - [Quick Start](#-quick-start)
 - [Usage Guide](#-usage-guide)
-- [Technical Architecture](#️-technical-architecture)
+- [Technical(LangGraph) Architecture](#️-technical-architecture)
 - [Prompt Design](#-prompt-design)
 - [Implementation Challenges](#-key-implementation-challenges)
 
