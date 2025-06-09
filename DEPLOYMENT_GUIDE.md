@@ -51,7 +51,7 @@ gcloud config list
 3. Generate new API key
 4. **IMPORTANT:** Copy and save the key securely
 
-### 2. Test Your Keys Locally (Optional)
+### 2. Save Your Keys Locally (Optional)
 
 Create a `.env` file in your project directory:
 
