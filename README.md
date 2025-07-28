@@ -160,7 +160,7 @@ gcloud run deploy interview-chatbot \
 
 ### Starting an Interview
 
-1. Access the web interface at `http://localhost:8501` or your cloud deployment URL
+1. Access the web interface at `http://localhost:8501(or whatever)` or your cloud deployment URL
 2. **Login/Register**:
 
    - Enter your name, email, and password
