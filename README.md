@@ -71,23 +71,7 @@ source venv/bin/activate
    pip install -r requirements.txt
 ```
 
-### 2. Configuration
-
-Create a `.env` file with required variables:
-
-```env
-OPENAI_API_KEY=your_openai_api_key
-MONGO_URI=your_mongodb_connection_string
-BACKEND_URL=http://127.0.0.1:8000
-```
-
-## ☁️ Cloud Deployment Setup
-
-### Google Cloud Run Deployment
-
-The application is designed for easy deployment to Google Cloud Run. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
-
-### Database Setup
+### 2. Database Setup
 
 - Create MongoDB Atlas account at [MongoDB Atlas](https://www.mongodb.com/atlas)
 - Set up a free cluster:
@@ -104,6 +88,22 @@ The application is designed for easy deployment to Google Cloud Run. See [DEPLOY
 - Get connection string:
   - Go to "Database" → "Connect" → "Connect your application"
   - Copy the connection string: `mongodb+srv://username:password@cluster.mongodb.net/`
+
+### 3. Configuration
+
+Create a `.env` file with required variables:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+MONGO_URI=your_mongodb_connection_string
+BACKEND_URL=http://127.0.0.1:8000
+```
+
+## ☁️ Cloud Deployment Setup
+
+### Google Cloud Run Deployment
+
+The application is designed for easy deployment to Google Cloud Run. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
 
 **Quick Cloud Deployment**:
 
